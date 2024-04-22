@@ -7,21 +7,23 @@ type TaxCalculator interface {
 }
 
 type IncomeTaxCalculator struct {
-	TotalIncome float64
-	Wht         float64
-	Allowances  []allowance
+	TotalIncome       float64
+	Wht               float64
+	Allowances        []allowance
+	personalAllowance float64
+	adminKrcp         float64
 }
 
 func (i *IncomeTaxCalculator) addAllowance(a allowance) {
 	i.Allowances = append(i.Allowances, a)
 }
 
-func (i IncomeTaxCalculator) CalculateTax(personalAllowance float64, adminKrcp float64) float64 {
+func (i IncomeTaxCalculator) CalculateTax() float64 {
 
-	netIncome := max(i.TotalIncome-personalAllowance, 0)
+	netIncome := max(i.TotalIncome-i.personalAllowance, 0)
 	allowanceMap := make(map[string]float64)
 	allowanceMap["donation"] = 100000.0
-	allowanceMap["k-receipt"] = adminKrcp
+	allowanceMap["k-receipt"] = i.adminKrcp
 
 	for _, a := range i.Allowances {
 		netIncome -= min(a.Amount, allowanceMap[strings.ToLower(a.AllowanceType)])

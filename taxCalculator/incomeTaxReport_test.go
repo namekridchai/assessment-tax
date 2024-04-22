@@ -21,11 +21,10 @@ func TestReport(t *testing.T) {
 			test.want, test.income,
 		)
 		t.Run(test_description, func(t *testing.T) {
-
-			income := test.income
+			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.income}
 			want := test.want
 
-			incomeTaxReport := Report(nil, 0.0, income)
+			incomeTaxReport := Report(incomeTaxCalculator)
 			got := incomeTaxReport.Tax
 
 			if got != want {
