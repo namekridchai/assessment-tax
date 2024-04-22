@@ -10,6 +10,16 @@ type IncomeTaxReport struct {
 	TaxLevels []TaxLevel
 }
 
-func Report(calcultor IncomeTaxCalculator) (report IncomeTaxReport) {
-	return IncomeTaxReport{Tax: calcultor.CalculateTax()}
+func Report(calcultor TaxCalculator) (report IncomeTaxReport) {
+	r := IncomeTaxReport{Tax: calcultor.CalculateTax()}
+	taxlevel := []TaxLevel{
+		{"", 0},
+		{"", 0},
+		{"", 0},
+		{"", 0},
+		{"", 0},
+	}
+	r.TaxLevels = taxlevel
+
+	return r
 }

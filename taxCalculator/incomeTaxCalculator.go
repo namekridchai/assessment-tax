@@ -6,6 +6,18 @@ type TaxCalculator interface {
 	CalculateTax() float64
 }
 
+type mockTaxCalculator struct {
+	tax float64
+}
+
+func (m mockTaxCalculator) CalculateTax() float64 {
+	return m.tax
+}
+
+func (m *mockTaxCalculator) CalculateTaxShouldReturn(tax float64) {
+	m.tax = tax
+}
+
 type IncomeTaxCalculator struct {
 	TotalIncome       float64
 	Wht               float64
