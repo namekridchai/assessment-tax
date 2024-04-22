@@ -2,6 +2,10 @@ package taxCalculator
 
 import "strings"
 
+type TaxCalculator interface {
+	CalculateTax() float64
+}
+
 type IncomeTaxCalculator struct {
 	TotalIncome float64
 	Wht         float64
