@@ -27,19 +27,11 @@ func (i IncomeTaxCalculator) CalculateTax(personalAllowance float64, adminKrcp f
 		netIncome -= min(a.Amount, allowanceMap[strings.ToLower(a.AllowanceType)])
 	}
 
-	out := sum(taxStep1(netIncome), taxStep2(netIncome), taxStep3(netIncome),
-		taxStep4(netIncome))
+	out := taxStep1(netIncome) + taxStep2(netIncome) + taxStep3(netIncome) +
+		taxStep4(netIncome)
 
 	return out - i.Wht
 
-}
-
-func sum(tax ...float64) float64 {
-	sum := 0.0
-	for _, v := range tax {
-		sum += v
-	}
-	return sum
 }
 
 func taxStep1(netIncome float64) float64 {
