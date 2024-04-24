@@ -10,7 +10,7 @@ type IncomeTaxReport struct {
 	TaxLevels []TaxLevel
 }
 
-func Report(calcultor TaxCalculator) (report IncomeTaxReport) {
+func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxReport) {
 	r := IncomeTaxReport{Tax: calcultor.CalculateTax()}
 	taxlevel := []TaxLevel{
 		{"", 0},
@@ -19,6 +19,11 @@ func Report(calcultor TaxCalculator) (report IncomeTaxReport) {
 		{"", 0},
 		{"", 0},
 	}
+
+	if 150000 < calcultor.TotalIncome() && calcultor.TotalIncome() <= 500000 {
+		taxlevel[1].Tax = r.Tax
+	}
+
 	r.TaxLevels = taxlevel
 
 	return r

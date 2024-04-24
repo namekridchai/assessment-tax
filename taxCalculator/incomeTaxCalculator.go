@@ -6,45 +6,62 @@ type TaxCalculator interface {
 	CalculateTax() float64
 }
 
-type mockTaxCalculator struct {
-	tax float64
-}
-
-func (m mockTaxCalculator) CalculateTax() float64 {
-	return m.tax
-}
-
-func (m *mockTaxCalculator) CalculateTaxShouldReturn(tax float64) {
-	m.tax = tax
+type incomeTaxCalculatorInterface interface {
+	CalculateTax() float64
+	Wht() float64
+	Allowances() []allowance
+	PersonalAllowance() float64
+	AdminKrcp() float64
+	TotalIncome() float64
 }
 
 type IncomeTaxCalculator struct {
-	TotalIncome       float64
-	Wht               float64
-	Allowances        []allowance
+	totalIncome       float64
+	wht               float64
+	allowances        []allowance
 	personalAllowance float64
 	adminKrcp         float64
 }
 
+func (i IncomeTaxCalculator) Wht() float64 {
+	return i.wht
+}
+
+func (i IncomeTaxCalculator) Allowances() []allowance {
+	return i.allowances
+}
+
+func (i IncomeTaxCalculator) PersonalAllowance() float64 {
+	return i.personalAllowance
+}
+
+func (i IncomeTaxCalculator) AdminKrcp() float64 {
+	return i.adminKrcp
+}
+
+func (i IncomeTaxCalculator) TotalIncome() float64 {
+	return i.totalIncome
+}
+
 func (i *IncomeTaxCalculator) addAllowance(a allowance) {
-	i.Allowances = append(i.Allowances, a)
+	i.allowances = append(i.allowances, a)
 }
 
 func (i IncomeTaxCalculator) CalculateTax() float64 {
 
-	netIncome := max(i.TotalIncome-i.personalAllowance, 0)
+	netIncome := max(i.TotalIncome()-i.personalAllowance, 0)
 	allowanceMap := make(map[string]float64)
 	allowanceMap["donation"] = 100000.0
 	allowanceMap["k-receipt"] = i.adminKrcp
 
-	for _, a := range i.Allowances {
+	for _, a := range i.Allowances() {
 		netIncome -= min(a.Amount, allowanceMap[strings.ToLower(a.AllowanceType)])
 	}
 
 	out := taxStep1(netIncome) + taxStep2(netIncome) + taxStep3(netIncome) +
 		taxStep4(netIncome)
 
-	return out - i.Wht
+	return out - i.Wht()
 
 }
 
@@ -81,9 +98,4 @@ func taxStep4(netIncome float64) float64 {
 	}
 	return 0
 
-}
-
-type allowance struct {
-	AllowanceType string
-	Amount        float64
 }
