@@ -24,6 +24,10 @@ func UpdatePersonalDeduction(c echo.Context) error {
 		return err
 	}
 
+	if request.Amount < 0 || request.Amount > 100000 {
+		return c.JSON(http.StatusBadRequest, "personal allowance should between 1 and 100000")
+	}
+
 	statementUpdate, err := db.Prepare("UPDATE public.allowance_master set personal = $1")
 	if err != nil {
 		return err
