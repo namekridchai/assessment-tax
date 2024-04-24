@@ -18,7 +18,7 @@ func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxRepor
 		{"", taxStep1(netIncome)},
 		{"", taxStep2(netIncome)},
 		{"", taxStep3(netIncome)},
-		{"", 0},
+		{"", taxStep4(netIncome)},
 	}
 
 	r.TaxLevels = taxlevel
