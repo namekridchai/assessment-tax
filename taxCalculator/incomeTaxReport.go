@@ -19,9 +19,15 @@ func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxRepor
 		{"", 0},
 		{"", 0},
 	}
+	netIncome := calcultor.TotalIncome()
 
-	if 150000 < calcultor.TotalIncome() && calcultor.TotalIncome() <= 500000 {
+	if 150000 < netIncome && netIncome <= 500000 {
 		taxlevel[1].Tax = r.Tax
+	}
+
+	if 500000 < netIncome && netIncome <= 1000000 {
+		taxlevel[1].Tax = taxStep1(netIncome)
+		taxlevel[2].Tax = taxStep2(netIncome)
 	}
 
 	r.TaxLevels = taxlevel
