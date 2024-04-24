@@ -42,14 +42,13 @@ func TestCalculateTax(t *testing.T) {
 		)
 		t.Run(test_description, func(t *testing.T) {
 			a := allowance{AllowanceType: "donation", Amount: 0.0}
-			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.income, Wht: 0.0}
+			incomeTaxCalculator := IncomeTaxCalculator{totalIncome: test.income, wht: 0.0}
 			incomeTaxCalculator.addAllowance(a)
-
-			adminKreceive := 0.0
+			incomeTaxCalculator.personalAllowance = test.personalAllowance
 
 			want := test.want
 
-			got := incomeTaxCalculator.CalculateTax(test.personalAllowance, adminKreceive)
+			got := incomeTaxCalculator.CalculateTax()
 
 			if got != want {
 				t.Errorf("got = %v, want %v", got, want)
@@ -64,14 +63,11 @@ func TestCalculateTaxWithWht(t *testing.T) {
 	)
 	t.Run(test_description, func(t *testing.T) {
 
-		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3000000.0, Wht: 60000.0}
-
-		personalAllowance := 0.0
-		adminKreceive := 0.0
+		incomeTaxCalculator := IncomeTaxCalculator{totalIncome: 3000000.0, wht: 60000.0}
 
 		want := 600000.0
 
-		got := incomeTaxCalculator.CalculateTax(personalAllowance, adminKreceive)
+		got := incomeTaxCalculator.CalculateTax()
 
 		if got != want {
 			t.Errorf("got = %v, want %v", got, want)
@@ -95,16 +91,13 @@ func TestCalculateTaxWithDonationAllowance(t *testing.T) {
 		)
 		t.Run(test_description, func(t *testing.T) {
 
-			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, Wht: 0.0}
+			incomeTaxCalculator := IncomeTaxCalculator{totalIncome: test.totalIncome, wht: 0.0}
 			a := allowance{AllowanceType: "donation", Amount: test.dontation_allowance}
 			incomeTaxCalculator.addAllowance(a)
 
-			personalAllowance := 0.0
-			adminKreceive := 0.0
-
 			want := test.want
 
-			got := incomeTaxCalculator.CalculateTax(personalAllowance, adminKreceive)
+			got := incomeTaxCalculator.CalculateTax()
 
 			if got != want {
 				t.Errorf("got = %v, want %v", got, want)
@@ -121,16 +114,13 @@ func TestCalculateTaxWithNonExistAllowance(t *testing.T) {
 	)
 	t.Run(test_description, func(t *testing.T) {
 
-		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3000000.0, Wht: 0.0}
+		incomeTaxCalculator := IncomeTaxCalculator{totalIncome: 3000000.0, wht: 0.0}
 		a := allowance{AllowanceType: "donate to aj.dang guitar", Amount: 100000.0}
 		incomeTaxCalculator.addAllowance(a)
 
-		personalAllowance := 0.0
-		adminKreceive := 0.0
-
 		want := 660000.0
 
-		got := incomeTaxCalculator.CalculateTax(personalAllowance, adminKreceive)
+		got := incomeTaxCalculator.CalculateTax()
 
 		if got != want {
 			t.Errorf("got = %v, want %v", got, want)
@@ -154,16 +144,15 @@ func TestCalculateTaxWithKrcpAllowance(t *testing.T) {
 		test_description := fmt.Sprintf("should return %v when income is %v admin allowance is %v user allowance is %v",
 			test.want, test.totalIncome, test.adminKrcp, test.krcp)
 		t.Run(test_description, func(t *testing.T) {
-			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, Wht: 0.0}
+			incomeTaxCalculator := IncomeTaxCalculator{totalIncome: test.totalIncome, wht: 0.0}
 			a := allowance{AllowanceType: "k-receipt", Amount: test.krcp}
 			incomeTaxCalculator.addAllowance(a)
 
-			personalAllowance := 0.0
-			adminKreceive := test.adminKrcp
+			incomeTaxCalculator.adminKrcp = test.adminKrcp
 
 			want := 660000.0
 
-			got := incomeTaxCalculator.CalculateTax(personalAllowance, adminKreceive)
+			got := incomeTaxCalculator.CalculateTax()
 
 			if got != want {
 				t.Errorf("got = %v, want %v", got, want)
@@ -178,7 +167,7 @@ func TestCalculateTaxWithMultipleAllowance(t *testing.T) {
 	test_description := fmt.Sprintf("should return %v when income is %v krcp is %v donation is %v",
 		660000.0, 3200000.0, 100000.0, 100000.0)
 	t.Run(test_description, func(t *testing.T) {
-		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3200000.0, Wht: 0.0}
+		incomeTaxCalculator := IncomeTaxCalculator{totalIncome: 3200000.0, wht: 0.0}
 
 		a1 := allowance{AllowanceType: "k-receipt", Amount: 100000.0}
 		a2 := allowance{AllowanceType: "donation", Amount: 100000.0}
@@ -186,12 +175,11 @@ func TestCalculateTaxWithMultipleAllowance(t *testing.T) {
 		incomeTaxCalculator.addAllowance(a1)
 		incomeTaxCalculator.addAllowance(a2)
 
-		personalAllowance := 0.0
-		adminKreceive := 100000.0
+		incomeTaxCalculator.adminKrcp = 100000.0
 
 		want := 660000.0
 
-		got := incomeTaxCalculator.CalculateTax(personalAllowance, adminKreceive)
+		got := incomeTaxCalculator.CalculateTax()
 
 		if got != want {
 			t.Errorf("got = %v, want %v", got, want)
