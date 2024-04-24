@@ -1,10 +1,15 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -107,5 +112,28 @@ func main() {
 	g.POST("/deductions/personal", UpdatePersonalDeduction)
 	g.POST("/deductions/k-receipt", UpdateKrcp)
 
-	e.Logger.Fatal(e.Start(portNum))
+	go func() {
+		e.Logger.Fatal(e.Start(portNum))
+	}()
+
+	gracefulStop := make(chan os.Signal, 1)
+	signal.Notify(gracefulStop, syscall.SIGTERM)
+	signal.Notify(gracefulStop, syscall.SIGINT)
+
+	<-gracefulStop
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := e.Shutdown(ctx); err != nil {
+		fmt.Printf("Error shutting down server %s", err)
+	} else {
+		fmt.Println("Server gracefully stopped")
+	}
+
+	if err := db.Close(); err != nil {
+		fmt.Printf("Error closing db connection %s", err)
+	} else {
+		fmt.Println("DB connection gracefully closed")
+	}
 }
