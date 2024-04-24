@@ -18,6 +18,8 @@ func TestReport(t *testing.T) {
 		{income: 500001.0, tax: 35000.15, want: [5]float64{0.0, 35000, 0.15, 0.0, 0.0}},
 		{income: 500002.0, tax: 35000.30, want: [5]float64{0.0, 35000, 0.30, 0.0, 0.0}},
 		{income: 1000000.0, tax: 110000, want: [5]float64{0.0, 35000, 75000, 0.0, 0.0}},
+		{income: 1000001.0, tax: 110000.2, want: [5]float64{0.0, 35000, 75000, 0.2, 0.0}},
+		{income: 1000002.0, tax: 110000.4, want: [5]float64{0.0, 35000, 75000, 0.4, 0.0}},
 	}
 	for _, test := range tests {
 		test_description := fmt.Sprintf("tax level should be %v when income is %v",

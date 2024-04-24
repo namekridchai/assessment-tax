@@ -12,22 +12,13 @@ type IncomeTaxReport struct {
 
 func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxReport) {
 	r := IncomeTaxReport{Tax: calcultor.CalculateTax()}
+	netIncome := calcultor.TotalIncome()
 	taxlevel := []TaxLevel{
 		{"", 0},
+		{"", taxStep1(netIncome)},
+		{"", taxStep2(netIncome)},
+		{"", taxStep3(netIncome)},
 		{"", 0},
-		{"", 0},
-		{"", 0},
-		{"", 0},
-	}
-	netIncome := calcultor.TotalIncome()
-
-	if 150000 < netIncome && netIncome <= 500000 {
-		taxlevel[1].Tax = r.Tax
-	}
-
-	if 500000 < netIncome && netIncome <= 1000000 {
-		taxlevel[1].Tax = taxStep1(netIncome)
-		taxlevel[2].Tax = taxStep2(netIncome)
 	}
 
 	r.TaxLevels = taxlevel
