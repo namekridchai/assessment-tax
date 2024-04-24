@@ -12,7 +12,9 @@ type IncomeTaxReport struct {
 
 func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxReport) {
 	r := IncomeTaxReport{Tax: calcultor.CalculateTax()}
-	netIncome := calcultor.TotalIncome()
+
+	netIncome := calcultor.NetIncome()
+
 	taxlevel := []TaxLevel{
 		{"", 0},
 		{"", taxStep1(netIncome)},

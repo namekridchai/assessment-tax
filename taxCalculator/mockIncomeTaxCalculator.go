@@ -7,6 +7,7 @@ type mockIncomeTaxCalculator struct {
 	allowances        []allowance
 	personalAllowance float64
 	adminKrcp         float64
+	netIncome         float64
 }
 
 func (m mockIncomeTaxCalculator) Wht() float64 {
@@ -33,6 +34,14 @@ func (m mockIncomeTaxCalculator) CalculateTax() float64 {
 	return m.tax
 }
 
+func (m mockIncomeTaxCalculator) NetIncome() float64 {
+	return m.netIncome
+}
+
 func (m *mockIncomeTaxCalculator) CalculateTaxShouldReturn(tax float64) {
 	m.tax = tax
+}
+
+func (m *mockIncomeTaxCalculator) NetIncomeShouldReturn(netIncome float64) {
+	m.netIncome = netIncome
 }

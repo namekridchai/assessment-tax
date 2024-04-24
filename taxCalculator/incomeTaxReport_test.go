@@ -32,6 +32,7 @@ func TestReport(t *testing.T) {
 			m := mockIncomeTaxCalculator{totalIncome: test.income}
 			want := test.want
 			m.CalculateTaxShouldReturn(test.tax)
+			m.NetIncomeShouldReturn(test.income)
 
 			incomeTaxReport := CreateReport(m)
 
