@@ -44,6 +44,37 @@ func UpdatePersonalDeduction(c echo.Context) error {
 
 }
 
+func UpdateKrcp(c echo.Context) error {
+
+	var request struct{ Amount float64 }
+	err := c.Bind(&request)
+	if err != nil {
+		return err
+	}
+
+	if request.Amount < 0 || request.Amount > 100000 {
+		return c.JSON(http.StatusBadRequest, "k_receipt should between 1 and 100000")
+	}
+
+	statementUpdate, err := db.Prepare("UPDATE public.allowance_master set k_receipt = $1")
+	if err != nil {
+		return err
+	}
+	defer statementUpdate.Close()
+
+	_, err = statementUpdate.Exec(request.Amount)
+	if err != nil {
+		return err
+	}
+
+	response := struct {
+		KReceipt float64 `json:"kReceipt"`
+	}{request.Amount}
+	fmt.Println(response)
+	return c.JSON(http.StatusCreated, response)
+
+}
+
 func HandleBasicAuth(username string, password string, c echo.Context) (bool, error) {
 	if username == "adminTax" && password == "admin!" {
 		return true, nil
@@ -74,6 +105,7 @@ func main() {
 	g := e.Group("/admin")
 	g.Use(middleware.BasicAuth(HandleBasicAuth))
 	g.POST("/deductions/personal", UpdatePersonalDeduction)
+	g.POST("/deductions/k-receipt", UpdateKrcp)
 
 	e.Logger.Fatal(e.Start(portNum))
 }
