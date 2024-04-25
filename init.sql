@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS public.allowance_master
 );
 
 INSERT INTO public.allowance_master (personal,k_receipt)
-VALUES (50000,50000);
+VALUES (60000,50000);

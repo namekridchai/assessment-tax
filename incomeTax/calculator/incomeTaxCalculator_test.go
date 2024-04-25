@@ -42,7 +42,7 @@ func TestCalculateTax(t *testing.T) {
 		)
 		t.Run(test_description, func(t *testing.T) {
 			a := allowance{AllowanceType: "donation", Amount: 0.0}
-			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.income, wht: 0.0}
+			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.income, Wht: 0.0}
 			incomeTaxCalculator.addAllowance(a)
 			incomeTaxCalculator.personalAllowance = test.personalAllowance
 
@@ -58,21 +58,32 @@ func TestCalculateTax(t *testing.T) {
 
 }
 func TestCalculateTaxWithWht(t *testing.T) {
-	test_description := fmt.Sprintf("should return %v when income is %v and wht is %v",
-		600000.0, 3000000.0, 6000.0,
-	)
-	t.Run(test_description, func(t *testing.T) {
+	tests := []struct {
+		totalIncome float64
+		wht         float64
+		want        float64
+	}{
+		{totalIncome: 3000000.0, wht: 60000.0, want: 600000.0},
+		{totalIncome: 3000000.0, wht: 660000.0, want: 0},
+	}
+	for _, test := range tests {
+		test_description := fmt.Sprintf("should return %v when income is %v and wht is %v",
+			test.want, test.totalIncome, test.wht,
+		)
+		t.Run(test_description, func(t *testing.T) {
 
-		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3000000.0, wht: 60000.0}
+			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, Wht: test.wht}
 
-		want := 600000.0
+			want := test.want
 
-		got := incomeTaxCalculator.CalculateTax()
+			got := incomeTaxCalculator.CalculateTax()
 
-		if got != want {
-			t.Errorf("got = %v, want %v", got, want)
-		}
-	})
+			if got != want {
+				t.Errorf("got = %v, want %v", got, want)
+			}
+		})
+	}
+
 }
 
 func TestCalculateTaxWithDonationAllowance(t *testing.T) {
@@ -91,7 +102,7 @@ func TestCalculateTaxWithDonationAllowance(t *testing.T) {
 		)
 		t.Run(test_description, func(t *testing.T) {
 
-			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, wht: 0.0}
+			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, Wht: 0.0}
 			a := allowance{AllowanceType: "donation", Amount: test.dontation_allowance}
 			incomeTaxCalculator.addAllowance(a)
 
@@ -114,7 +125,7 @@ func TestCalculateTaxWithNonExistAllowance(t *testing.T) {
 	)
 	t.Run(test_description, func(t *testing.T) {
 
-		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3000000.0, wht: 0.0}
+		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3000000.0, Wht: 0.0}
 		a := allowance{AllowanceType: "donate to aj.dang guitar", Amount: 100000.0}
 		incomeTaxCalculator.addAllowance(a)
 
@@ -144,7 +155,7 @@ func TestCalculateTaxWithKrcpAllowance(t *testing.T) {
 		test_description := fmt.Sprintf("should return %v when income is %v admin allowance is %v user allowance is %v",
 			test.want, test.totalIncome, test.adminKrcp, test.krcp)
 		t.Run(test_description, func(t *testing.T) {
-			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, wht: 0.0}
+			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, Wht: 0.0}
 			a := allowance{AllowanceType: "k-receipt", Amount: test.krcp}
 			incomeTaxCalculator.addAllowance(a)
 
@@ -167,7 +178,7 @@ func TestCalculateTaxWithMultipleAllowance(t *testing.T) {
 	test_description := fmt.Sprintf("should return %v when income is %v krcp is %v donation is %v",
 		660000.0, 3200000.0, 100000.0, 100000.0)
 	t.Run(test_description, func(t *testing.T) {
-		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3200000.0, wht: 0.0}
+		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3200000.0, Wht: 0.0}
 
 		a1 := allowance{AllowanceType: "k-receipt", Amount: 100000.0}
 		a2 := allowance{AllowanceType: "donation", Amount: 100000.0}

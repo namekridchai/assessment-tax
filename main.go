@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
+	calculation "github.com/namekridchai/assessment_tax/incomeTax/calculation"
 )
 
 const portNum string = ":8080"
@@ -111,6 +112,7 @@ func main() {
 	g.Use(middleware.BasicAuth(HandleBasicAuth))
 	g.POST("/deductions/personal", UpdatePersonalDeduction)
 	g.POST("/deductions/k-receipt", UpdateKrcp)
+	e.POST("tax/calculations", calculation.Calculation)
 
 	go func() {
 		e.Logger.Fatal(e.Start(portNum))

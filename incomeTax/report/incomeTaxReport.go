@@ -4,8 +4,6 @@ import (
 	calculator "github.com/namekridchai/assessment_tax/incomeTax/calculator"
 )
 
-type incomeTaxCalculatorInterface calculator.IncomeTaxCalculatorInterface
-
 type TaxLevel struct {
 	Level string
 	Tax   float64
@@ -17,7 +15,7 @@ type IncomeTaxReport struct {
 	TaxRefund float64
 }
 
-func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxReport) {
+func CreateReport(calcultor calculator.IncomeTaxCalculatorInterface) (report IncomeTaxReport) {
 	r := IncomeTaxReport{Tax: calcultor.CalculateTax()}
 
 	netIncome := calcultor.NetIncome()
@@ -30,7 +28,7 @@ func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxRepor
 		{"2,000,001 ขึ้นไป", calculator.TaxStep4(netIncome)},
 	}
 
-	wht := calcultor.Wht()
+	wht := calcultor.GetWht()
 	taxlevelIndex := len(taxlevel) - 1
 	for wht > 0 && taxlevelIndex >= 0 {
 		if taxlevel[taxlevelIndex].Tax != 0 {

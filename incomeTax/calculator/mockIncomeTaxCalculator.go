@@ -7,7 +7,7 @@ type MockIncomeTaxCalculator struct {
 	netIncome   float64
 }
 
-func (m MockIncomeTaxCalculator) Wht() float64 {
+func (m MockIncomeTaxCalculator) GetWht() float64 {
 	return m.wht
 }
 
