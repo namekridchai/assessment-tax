@@ -16,11 +16,11 @@ func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxRepor
 	netIncome := calcultor.NetIncome()
 
 	taxlevel := []TaxLevel{
-		{"", 0},
-		{"", taxStep1(netIncome)},
-		{"", taxStep2(netIncome)},
-		{"", taxStep3(netIncome)},
-		{"", taxStep4(netIncome)},
+		{"0-150,000", 0},
+		{"150,001-500,000", taxStep1(netIncome)},
+		{"500,001-1,000,000", taxStep2(netIncome)},
+		{"1,000,001-2,000,000", taxStep3(netIncome)},
+		{"2,000,001 ขึ้นไป", taxStep4(netIncome)},
 	}
 
 	r.TaxLevels = taxlevel
