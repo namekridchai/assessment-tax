@@ -23,6 +23,19 @@ func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxRepor
 		{"2,000,001 ขึ้นไป", taxStep4(netIncome)},
 	}
 
+	wht := calcultor.Wht()
+	taxlevelIndex := len(taxlevel) - 1
+	for wht > 0 && taxlevelIndex >= 0 {
+		if taxlevel[taxlevelIndex].Tax != 0 {
+			currentTax := taxlevel[taxlevelIndex].Tax
+			newTax := currentTax - wht
+			wht -= currentTax
+			taxlevel[taxlevelIndex].Tax = max(newTax, 0)
+		}
+		taxlevelIndex--
+
+	}
+
 	r.TaxLevels = taxlevel
 
 	return r
