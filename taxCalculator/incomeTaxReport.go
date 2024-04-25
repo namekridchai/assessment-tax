@@ -8,6 +8,7 @@ type TaxLevel struct {
 type IncomeTaxReport struct {
 	Tax       float64
 	TaxLevels []TaxLevel
+	TaxRefund float64
 }
 
 func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxReport) {
@@ -37,6 +38,8 @@ func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxRepor
 	}
 
 	r.TaxLevels = taxlevel
+	wht = max(0, wht)
+	r.TaxRefund = wht
 
 	return r
 }
