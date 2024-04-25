@@ -3,6 +3,7 @@ package incomeTaxAllowance
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -12,7 +13,7 @@ type Allowance struct {
 	Amount        float64
 }
 
-const connStr = "user=postgres password=postgres dbname=ktaxes sslmode=disable"
+var connStr = os.Getenv("DATABASE_URL")
 
 var db *sql.DB
 

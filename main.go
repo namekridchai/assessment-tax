@@ -17,8 +17,9 @@ import (
 	calculation "github.com/namekridchai/assessment_tax/incomeTax/calculation"
 )
 
-const portNum string = ":8080"
-const connStr = "user=postgres password=postgres dbname=ktaxes sslmode=disable"
+var portNum string = os.Getenv("PORT")
+
+var connStr = os.Getenv("DATABASE_URL")
 
 var db *sql.DB
 
@@ -82,7 +83,7 @@ func UpdateKrcp(c echo.Context) error {
 }
 
 func HandleBasicAuth(username string, password string, c echo.Context) (bool, error) {
-	if username == "adminTax" && password == "admin!" {
+	if username == os.Getenv("ADMIN_USERNAME") && password == os.Getenv("ADMIN_PASSWORD") {
 		return true, nil
 	}
 	return false, nil
