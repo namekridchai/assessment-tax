@@ -1,8 +1,10 @@
-package taxCalculator
+package incomeTaxReport
 
 import (
 	"fmt"
 	"testing"
+
+	calculator "github.com/namekridchai/assessment_tax/incomeTax/calculator"
 )
 
 func TestCreateReport(t *testing.T) {
@@ -29,7 +31,7 @@ func TestCreateReport(t *testing.T) {
 			test.want, test.income,
 		)
 		t.Run(test_description, func(t *testing.T) {
-			m := mockIncomeTaxCalculator{totalIncome: test.income}
+			m := calculator.MockIncomeTaxCalculator{TotalIncome: test.income}
 			want := test.want
 			m.NetIncomeShouldReturn(test.income)
 
@@ -89,7 +91,8 @@ func TestCreateReportWithWht(t *testing.T) {
 			test.want, test.income,
 		)
 		t.Run(test_description, func(t *testing.T) {
-			m := mockIncomeTaxCalculator{totalIncome: test.income, wht: test.wht}
+			m := calculator.MockIncomeTaxCalculator{TotalIncome: test.income}
+			m.SetWht(test.wht)
 			want := test.want
 			m.NetIncomeShouldReturn(test.income)
 
@@ -125,7 +128,8 @@ func TestCreateReportWithRefund(t *testing.T) {
 			test.want, test.income,
 		)
 		t.Run(test_description, func(t *testing.T) {
-			m := mockIncomeTaxCalculator{totalIncome: test.income, wht: test.wht}
+			m := calculator.MockIncomeTaxCalculator{TotalIncome: test.income}
+			m.SetWht(test.wht)
 			want := test.want
 			m.NetIncomeShouldReturn(test.income)
 

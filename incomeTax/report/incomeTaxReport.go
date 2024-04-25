@@ -1,4 +1,10 @@
-package taxCalculator
+package incomeTaxReport
+
+import (
+	calculator "github.com/namekridchai/assessment_tax/incomeTax/calculator"
+)
+
+type incomeTaxCalculatorInterface calculator.IncomeTaxCalculatorInterface
 
 type TaxLevel struct {
 	Level string
@@ -18,10 +24,10 @@ func CreateReport(calcultor incomeTaxCalculatorInterface) (report IncomeTaxRepor
 
 	taxlevel := []TaxLevel{
 		{"0-150,000", 0},
-		{"150,001-500,000", taxStep1(netIncome)},
-		{"500,001-1,000,000", taxStep2(netIncome)},
-		{"1,000,001-2,000,000", taxStep3(netIncome)},
-		{"2,000,001 ขึ้นไป", taxStep4(netIncome)},
+		{"150,001-500,000", calculator.TaxStep1(netIncome)},
+		{"500,001-1,000,000", calculator.TaxStep2(netIncome)},
+		{"1,000,001-2,000,000", calculator.TaxStep3(netIncome)},
+		{"2,000,001 ขึ้นไป", calculator.TaxStep4(netIncome)},
 	}
 
 	wht := calcultor.Wht()
