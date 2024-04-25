@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestReport(t *testing.T) {
+func TestCreateReport(t *testing.T) {
 	tests := []struct {
 		income float64
 		tax    float64
@@ -23,6 +23,41 @@ func TestReport(t *testing.T) {
 		{income: 2000000.0, tax: 310000, want: [5]float64{0.0, 35000, 75000, 200000.0, 0.0}},
 		{income: 2000001.0, tax: 310000.35, want: [5]float64{0.0, 35000, 75000, 200000.0, 0.35}},
 		{income: 3000000.0, tax: 660000.0, want: [5]float64{0.0, 35000, 75000, 200000.0, 350000.0}},
+	}
+	for _, test := range tests {
+		test_description := fmt.Sprintf("tax level should be %v when income is %v",
+			test.want, test.income,
+		)
+		t.Run(test_description, func(t *testing.T) {
+			m := mockIncomeTaxCalculator{totalIncome: test.income}
+			want := test.want
+			m.CalculateTaxShouldReturn(test.tax)
+			m.NetIncomeShouldReturn(test.income)
+
+			incomeTaxReport := CreateReport(m)
+
+			taxLevels := incomeTaxReport.TaxLevels
+			var got [5]float64
+			for i := 0; i < len(taxLevels); i++ {
+				got[i] = taxLevels[i].Tax
+			}
+
+			if got != want {
+				t.Errorf("got = %v, want %v", got, want)
+			}
+		})
+	}
+
+}
+
+func TestCreateReportWithWht(t *testing.T) {
+	tests := []struct {
+		income float64
+		tax    float64
+		wht    float64
+		want   [5]float64
+	}{
+		{income: 150000.0, tax: 0.0, wht: 1000, want: [5]float64{0.0, 0.0, 0.0, 0.0, 0.0}},
 	}
 	for _, test := range tests {
 		test_description := fmt.Sprintf("tax level should be %v when income is %v",
