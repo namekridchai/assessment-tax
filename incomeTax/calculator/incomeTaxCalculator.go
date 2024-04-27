@@ -10,8 +10,6 @@ type TaxCalculator interface {
 	CalculateTax() float64
 }
 
-type allowance incomeTaxAllowance.Allowance
-
 type IncomeTaxCalculatorInterface interface {
 	CalculateTax() float64
 	GetWht() float64
@@ -21,7 +19,7 @@ type IncomeTaxCalculatorInterface interface {
 type IncomeTaxCalculator struct {
 	TotalIncome       float64
 	Wht               float64
-	Allowances        []allowance
+	Allowances        []incomeTaxAllowance.Allowance
 	personalAllowance float64
 	adminKrcp         float64
 }
@@ -30,7 +28,7 @@ func (i IncomeTaxCalculator) GetWht() float64 {
 	return i.Wht
 }
 
-func (i *IncomeTaxCalculator) addAllowance(a allowance) {
+func (i *IncomeTaxCalculator) AddAllowance(a incomeTaxAllowance.Allowance) {
 	i.Allowances = append(i.Allowances, a)
 }
 
@@ -64,6 +62,14 @@ func (i *IncomeTaxCalculator) SetPersonalAllowance(personalAllowance float64) {
 
 func (i *IncomeTaxCalculator) SetAdminKrcp(adminKrcp float64) {
 	i.adminKrcp = adminKrcp
+}
+
+func (i *IncomeTaxCalculator) SetTotalIncome(totalIncome float64) {
+	i.TotalIncome = totalIncome
+}
+
+func (i *IncomeTaxCalculator) SetWht(wht float64) {
+	i.Wht = wht
 }
 
 func TaxStep1(netIncome float64) float64 {

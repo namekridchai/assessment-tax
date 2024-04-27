@@ -14,7 +14,6 @@ type Allowance struct {
 }
 
 var connStr = os.Getenv("DATABASE_URL")
-
 var db *sql.DB
 
 func init() {

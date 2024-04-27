@@ -21,6 +21,8 @@ var portNum string = os.Getenv("PORT")
 
 var connStr = os.Getenv("DATABASE_URL")
 
+// var connStr = "user=postgres password=postgres dbname=ktaxes sslmode=disable"
+
 var db *sql.DB
 
 func UpdatePersonalDeduction(c echo.Context) error {
@@ -90,7 +92,6 @@ func HandleBasicAuth(username string, password string, c echo.Context) (bool, er
 }
 
 func main() {
-
 	var err error
 	db, err = sql.Open("postgres", connStr)
 
@@ -114,6 +115,7 @@ func main() {
 	g.POST("/deductions/personal", UpdatePersonalDeduction)
 	g.POST("/deductions/k-receipt", UpdateKrcp)
 	e.POST("tax/calculations", calculation.Calculation)
+	e.POST("tax/calculations/upload-csv", calculation.CSVCalulation)
 
 	go func() {
 		e.Logger.Fatal(e.Start(portNum))

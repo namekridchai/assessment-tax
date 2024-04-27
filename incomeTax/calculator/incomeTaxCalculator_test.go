@@ -3,6 +3,8 @@ package incomeTaxCalculator
 import (
 	"fmt"
 	"testing"
+
+	incomeTaxAllowance "github.com/namekridchai/assessment_tax/incomeTax/allowance"
 )
 
 func TestCalculateTax(t *testing.T) {
@@ -41,9 +43,9 @@ func TestCalculateTax(t *testing.T) {
 			test.want, test.income, test.personalAllowance,
 		)
 		t.Run(test_description, func(t *testing.T) {
-			a := allowance{AllowanceType: "donation", Amount: 0.0}
+			a := incomeTaxAllowance.Allowance{AllowanceType: "donation", Amount: 0.0}
 			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.income, Wht: 0.0}
-			incomeTaxCalculator.addAllowance(a)
+			incomeTaxCalculator.AddAllowance(a)
 			incomeTaxCalculator.personalAllowance = test.personalAllowance
 
 			want := test.want
@@ -103,8 +105,8 @@ func TestCalculateTaxWithDonationAllowance(t *testing.T) {
 		t.Run(test_description, func(t *testing.T) {
 
 			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, Wht: 0.0}
-			a := allowance{AllowanceType: "donation", Amount: test.dontation_allowance}
-			incomeTaxCalculator.addAllowance(a)
+			a := incomeTaxAllowance.Allowance{AllowanceType: "donation", Amount: test.dontation_allowance}
+			incomeTaxCalculator.AddAllowance(a)
 
 			want := test.want
 
@@ -126,8 +128,8 @@ func TestCalculateTaxWithNonExistAllowance(t *testing.T) {
 	t.Run(test_description, func(t *testing.T) {
 
 		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3000000.0, Wht: 0.0}
-		a := allowance{AllowanceType: "donate to aj.dang guitar", Amount: 100000.0}
-		incomeTaxCalculator.addAllowance(a)
+		a := incomeTaxAllowance.Allowance{AllowanceType: "donate to aj.dang guitar", Amount: 100000.0}
+		incomeTaxCalculator.AddAllowance(a)
 
 		want := 660000.0
 
@@ -156,8 +158,8 @@ func TestCalculateTaxWithKrcpAllowance(t *testing.T) {
 			test.want, test.totalIncome, test.adminKrcp, test.krcp)
 		t.Run(test_description, func(t *testing.T) {
 			incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: test.totalIncome, Wht: 0.0}
-			a := allowance{AllowanceType: "k-receipt", Amount: test.krcp}
-			incomeTaxCalculator.addAllowance(a)
+			a := incomeTaxAllowance.Allowance{AllowanceType: "k-receipt", Amount: test.krcp}
+			incomeTaxCalculator.AddAllowance(a)
 
 			incomeTaxCalculator.adminKrcp = test.adminKrcp
 
@@ -180,11 +182,11 @@ func TestCalculateTaxWithMultipleAllowance(t *testing.T) {
 	t.Run(test_description, func(t *testing.T) {
 		incomeTaxCalculator := IncomeTaxCalculator{TotalIncome: 3200000.0, Wht: 0.0}
 
-		a1 := allowance{AllowanceType: "k-receipt", Amount: 100000.0}
-		a2 := allowance{AllowanceType: "donation", Amount: 100000.0}
+		a1 := incomeTaxAllowance.Allowance{AllowanceType: "k-receipt", Amount: 100000.0}
+		a2 := incomeTaxAllowance.Allowance{AllowanceType: "donation", Amount: 100000.0}
 
-		incomeTaxCalculator.addAllowance(a1)
-		incomeTaxCalculator.addAllowance(a2)
+		incomeTaxCalculator.AddAllowance(a1)
+		incomeTaxCalculator.AddAllowance(a2)
 
 		incomeTaxCalculator.adminKrcp = 100000.0
 
