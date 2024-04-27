@@ -62,7 +62,7 @@ func CSVCalulation(c echo.Context) error {
 		mapIndexToColName[i] = columnNames[i]
 	}
 
-	mapColToFn := make(map[string]func(*incomeTaxCalculator.IncomeTaxCalculator, string))
+	mapColToFn := make(map[string]func(*incomeTaxCalculator.IncomeTaxCalculator, string) error)
 	mapColToFn["totalIncome"] = setTotalIncome
 	mapColToFn["wht"] = setTotalWht
 	mapColToFn["donation"] = setDonation
@@ -73,7 +73,10 @@ func CSVCalulation(c echo.Context) error {
 		content := strings.Split(stringByline[line], ",")
 		for col := 0; col < len(content); col++ {
 			colName := strings.TrimSpace(mapIndexToColName[col])
-			mapColToFn[colName](calculator, content[col])
+			err := mapColToFn[colName](calculator, content[col])
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, err.Error())
+			}
 		}
 		calculator.SetPersonalAllowance(incomeTaxAllowance.GetPersonalDeduction())
 		calculator.SetAdminKrcp(incomeTaxAllowance.GetKrcp())
@@ -87,21 +90,31 @@ func CSVCalulation(c echo.Context) error {
 	return c.JSON(http.StatusCreated, reponse)
 }
 
-func setTotalIncome(c *incomeTaxCalculator.IncomeTaxCalculator, income string) {
-	incomeFloat, _ := strconv.ParseFloat(strings.TrimSpace(income), 64)
+func setTotalIncome(c *incomeTaxCalculator.IncomeTaxCalculator, income string) error {
+	incomeFloat, err := strconv.ParseFloat(strings.TrimSpace(income), 64)
+	if err != nil {
+		return fmt.Errorf("income wrong format")
+	}
 	c.TotalIncome = incomeFloat
-
+	return nil
 }
 
-func setTotalWht(c *incomeTaxCalculator.IncomeTaxCalculator, wht string) {
-	whtFloat, _ := strconv.ParseFloat(strings.TrimSpace(wht), 64)
+func setTotalWht(c *incomeTaxCalculator.IncomeTaxCalculator, wht string) error {
+	whtFloat, err := strconv.ParseFloat(strings.TrimSpace(wht), 64)
+	if err != nil {
+		return fmt.Errorf("income wrong format")
+	}
 	c.Wht = whtFloat
-
+	return nil
 }
 
-func setDonation(c *incomeTaxCalculator.IncomeTaxCalculator, donation string) {
-	donationFloat, _ := strconv.ParseFloat(strings.TrimSpace(donation), 64)
+func setDonation(c *incomeTaxCalculator.IncomeTaxCalculator, donation string) error {
+	donationFloat, err := strconv.ParseFloat(strings.TrimSpace(donation), 64)
+	if err != nil {
+		return fmt.Errorf("income wrong format")
+	}
 
 	a := incomeTaxAllowance.Allowance{AllowanceType: "donation", Amount: donationFloat}
 	c.AddAllowance(a)
+	return nil
 }
